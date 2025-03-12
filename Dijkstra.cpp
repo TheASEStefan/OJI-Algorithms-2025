@@ -66,6 +66,10 @@ void dijkstra()
         }
     }
 
+}
+
+void afis()
+{
     for (int i = 1; i <= n; i ++)
     {
         if (D[i] == INF)
@@ -77,13 +81,13 @@ void dijkstra()
             fout << D[i] << " ";
         }
     }
-
 }
 
 int main()
 {
     citeste();
     dijkstra();
+    afis();
 
     return 0;
 }
