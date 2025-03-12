@@ -27,6 +27,7 @@ void citeste()
 
 void dijkstra()
 {
+    /** Initializare si curatare din cache */
     for (int i = 1; i <= n; i ++)
     {
         if (i != nodStart)
@@ -37,6 +38,9 @@ void dijkstra()
         }
     }
 
+    /** Prima initializare, setare desteapta, in vectorul de tati, fiecare nod va fi legat de nodul initial
+    pentru a trece prin el, costul este luat si setat in vectorul d care stocheaza costul fiecarui arc
+    dintre nodul de start si nodul j curent */
     for (int k = 0; k < mat[nodStart].size(); k ++)
     {
        int j = mat[nodStart][k].first;
@@ -85,9 +89,14 @@ void afis()
 
 int main()
 {
+    ios_base::sync_with_stdio(false);
+    fin.tie(NULL);
+    fout.tie(NULL);
     citeste();
     dijkstra();
     afis();
-
+    fin.close();
+    fout.close();
+    
     return 0;
 }
