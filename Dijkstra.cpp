@@ -8,9 +8,9 @@ using namespace std;
 ifstream fin("in.txt");
 ofstream fout("out.txt");
 
-const int INF = 1e4;
+const int INF = 1e9;
 vector<pair<int, int>> mat[50001]; /// matricea costurilor
-priority_queue<pair<int, int>> Q; /// coada cu prioritati pentru minim
+priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> Q; /// coada cu prioritati pentru minim
 int n, m, nodStart, D[50001], S[50001], T[50001];
 
 // Graf Orientat
@@ -41,14 +41,15 @@ void dijkstra()
     /** Prima initializare, setare desteapta, in vectorul de tati, fiecare nod va fi legat de nodul initial
     pentru a trece prin el, costul este luat si setat in vectorul d care stocheaza costul fiecarui arc
     dintre nodul de start si nodul j curent */
-    for (int k = 0; k < mat[nodStart].size(); k ++)
+    for (auto& vecin : mat[nodStart])
     {
-       int j = mat[nodStart][k].first;
-       int cost = mat[nodStart][k].second;
+       int j = vecin.first;
+       int cost = vecin.second;
        D[j] = cost;
        T[j] = nodStart;
-       Q.push(make_pair(-cost, j));
+       Q.push(make_pair(D[j], j));
     }
+    T[nodStart] = 0;
     D[nodStart] = 0;
     S[nodStart] = 1;
 
@@ -56,16 +57,17 @@ void dijkstra()
     {
         int poz = Q.top().second;
         Q.pop();
+        if (S[poz]) continue;
         S[poz] = 1;
-        for (int k = 0; k < mat[poz].size(); k ++)
+        for (auto& vecin : mat[poz])
         {
-            int j = mat[poz][k].first;
-            int cost = mat[poz][k].second;
-            if (S[j] == 0 && D[j] > D[poz] + cost)
+            int j = vecin.first;
+            int cost = vecin.second;
+            if (D[j] > D[poz] + cost)
             {
                 D[j] = D[poz] + cost;
                 T[j] = poz;
-                Q.push(make_pair(-cost, j));
+                Q.push(make_pair(D[j], j));
             }
         }
     }
@@ -97,6 +99,6 @@ int main()
     afis();
     fin.close();
     fout.close();
-    
+
     return 0;
 }
