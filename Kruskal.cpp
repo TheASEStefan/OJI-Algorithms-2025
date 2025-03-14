@@ -9,68 +9,77 @@ using namespace std;
 ifstream fin("in.txt");
 ofstream fout("out.txt");
 
-int n, m, S[10001], T[10001];
+const int INF = 1e5*2;
+vector<pair<int, pair<int, int>>> edge(INF); // Muchiile Costurilor
+int n, m, T[125000], Rang[125000], costMin = 0;
 
-struct muchie
-{
-    int i, j, cost;
-
-}edge[5000];
-
-bool comp(muchie m1, muchie m2)
-{
-    return m1.cost < m2.cost;
-}
 
 void citire()
 {
     fin >> n >> m;
-    for (int i = 1; i <= m; i ++)
+    for (int i = 0; i < m; i ++)
     {
-        fin >> edge[i].i >> edge[i].j >> edge[i].cost;
+        int type, x, y, cost;
+        fin >> type >> x >> y;
+        edge[i].second.first = x;
+        edge[i].second.second = y;
+        edge[i].first = (type == 1) ? 0 : (fin >> cost, cost);
     }
 }
 
 void sortare()
 {
-    sort(edge + 1, edge + m + 1, comp);
+    sort(edge.begin(), edge.end());
+}
+
+int root(int k)
+{
+    if (T[k] == k)
+    {
+        return k;
+    }
+    return T[k] = root(T[k]);
+}
+
+void rootUnion(int nodeOne, int nodeTwo)
+{
+    int rOne = root(nodeOne), rTwo = root(nodeTwo);
+    if (rOne != rTwo)
+    {
+        if (Rang[rOne] > Rang[rTwo])
+        {
+            T[rTwo] = rOne;
+        }
+        else
+        {
+            T[rOne] = rTwo;
+            if (Rang[rOne] == Rang[rTwo])
+                Rang[rTwo]++;
+        }
+    }
+
 }
 
 void kruskal()
 {
-    for (int i = 1 ; i <= n ; i ++)
+
+    for (int i = 1; i <= n; i ++)
+    {
         T[i] = i;
+    }
 
-    int costMin = 0;
-    for (int i = 1 ; i <= m; i ++)
+    for (auto& e : edge)
     {
-        if (T[edge[i].i] != T[edge[i].j])
+        int u = e.second.first, v = e.second.second, cost = e.first;
+        if (root(u) != root(v))
         {
-            S[i] = 1;
-            costMin += edge[i].cost;
-            int ai = T[edge[i].i];
-            int aj = T[edge[i].j];
-            for (int j = 1 ; j <= n ; j ++)
-            {
-                if (T[j] == aj)
-                {
-                    T[j] = ai;
-                }
-            }
+            rootUnion(u, v);
+            costMin += cost;
         }
     }
 
-    fout << costMin << '\n';
-    for (int i = 1; i < m ; i ++)
-    {
-        if (S[i] == 1)
-        {
-            fout << edge[i].i << " " << edge[i].j << '\n';
-        }
-    }
+    fout << costMin << " ";
 }
-
-
 
 
 int main()
