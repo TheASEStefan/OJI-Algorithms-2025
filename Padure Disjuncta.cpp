@@ -81,7 +81,7 @@ int main()
         int rady = radacina(mat[i].j);
         if (radx != rady)
         {
-            leagaRadacini(radx, rady);
+            leagaRadacini(mat[i].i, mat[i].j);
             compConexe --;
         }
     }
